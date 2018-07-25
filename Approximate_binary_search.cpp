@@ -1,39 +1,36 @@
 #include <iostream>
 #include <cstddef>
 #include <vector>
-#include <cmath>
 
 int main() {
-    int f_size, s_size;
-    std::cin >> f_size >> s_size;
-    std::vector<int> f_mass(f_size);
-    for (auto& x : f_mass) {
-        std::cin >> x;
+    int64_t first, second;
+    std::cin >> first >> second;
+
+    std::vector<int64_t> mass(first);
+    for (size_t i = 0; i != first; i++) {
+        std::cin >> mass[i];
     }
-    for (int i = 0; i != s_size; i++) {
-        bool flag = false;
-        int average, up = f_size - 1, down = 0, dial;
+
+    for (size_t i = 0; i != second; i++) {
+        int64_t dial;
         std::cin >> dial;
+        int64_t up = first - 1, down = 0, cur_pos = (up + down) / 2;
+
         while (up != down) {
-            average = (up + down) / 2;
-            if (f_mass[average] > dial) {
-                up = average;
-            } else if (f_mass[average] < dial) {
-                down = average + 1;
+            cur_pos = (up + down) / 2;
+            if (mass[cur_pos] > dial) {
+                up = cur_pos;
+            } else if (mass[cur_pos] < dial) {
+                down = cur_pos + 1;
             } else {
-                flag = true;
-                down = average;
-                up = down;
+                down = cur_pos;
+                up = cur_pos;
             }
         }
-        if (flag || down == 0) {
-            std::cout << f_mass[down] << std::endl;
-        } else {
-            if (f_mass[down] - dial < dial - f_mass[down - 1]) {
-                std::cout << f_mass[down] << std::endl;
-            } else {
-                std::cout << f_mass[down - 1] << std::endl;
-            }
+        if (down != 0 && -mass[down - 1] + dial <= mass[down] - dial) {
+            down -= 1;
         }
+        std::cout << mass[down] << std::endl;
     }
+    return 0;
 }
